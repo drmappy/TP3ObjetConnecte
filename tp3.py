@@ -1,6 +1,4 @@
-from gpiozero import MotionSensor
-from gpiozero import RGBLED
-from gpiozero import DistanceSensor
+from gpiozero import MotionSensor, RGBLED, DistanceSensor
 import adafruit_dht
 from interface import main
 
