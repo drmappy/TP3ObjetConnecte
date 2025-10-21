@@ -31,8 +31,22 @@ def main(dt11, distanceSensor, ledRGB):
         root.quit()
 
     def printInfo():
+        distanceInCentimeters = distanceSensor.distance * 100
+        distanceInMeters = distanceSensor.distance
         while not stop_event.is_set():
-            print("Seconde ", frequence, " : Température : ", dt11.temperature, "C  Humidité ", dt11.humidity, "    Distance ", distanceSensor.distance, "RGBLED ", ledRGB.color)
+            if distanceInCentimeters < 10:
+                ledRGB.red = 1
+                ledRGB.blue = 0
+                ledRGB.green = 0
+            elif distanceInCentimeters >= 10 and distanceInCentimeters <= 30:
+                ledRGB.red = 1
+                ledRGB.blue = 0
+                ledRGB.green = 1
+            else:
+                ledRGB.red = 0
+                ledRGB.blue = 0
+                ledRGB.green = 1
+            print("Seconde ", frequence, " : Température : ", dt11.temperature, "C  Humidité ", dt11.humidity, "    Distance ", distanceInMeters, "m RGBLED ", ledRGB.color)
             time.sleep(frequence)
 
     def restart_print_thread():
