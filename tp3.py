@@ -2,10 +2,6 @@ from gpiozero import MotionSensor
 from gpiozero import RGBLED
 from gpiozero import DistanceSensor
 import adafruit_dht
-import turtle
-import tkinter
-import threading
-from time import sleep
 from interface import main
 
 ledRGB = RGBLED(13, 19, 26)
