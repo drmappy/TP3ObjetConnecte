@@ -2,6 +2,7 @@ import tkinter as tk
 
 def main():
     root = tk.Tk()
+    root.title("")
     
     
     def ajouter_intervalle():
@@ -13,7 +14,6 @@ def main():
     def stop():
         print("button 3")
 
-    # Buttons frame
     btn_frame = tk.Frame(root)
     btn_frame.pack(side=tk.BOTTOM, fill=tk.X)
 
