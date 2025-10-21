@@ -12,7 +12,6 @@ ledRGB = RGBLED(13, 19, 26)
 motionSensor = MotionSensor(17)
 distanceSensor = DistanceSensor(echo=16, trigger=12)
 dt11 = adafruit_dht.DHT11(21)
-frequence = 1
 
 def mainCode():
     print("Merci, c'est parti!")

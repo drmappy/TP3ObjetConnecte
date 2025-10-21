@@ -61,4 +61,4 @@ def main(dt11, distanceSensor, ledRGB):
     root.mainloop()
 
 if __name__ == "__main__":
-    pass
+    print("Not to be used in main.")
