@@ -7,7 +7,7 @@ ledRGB = RGBLED(13, 19, 26)
 motionSensor = MotionSensor(17)
 distanceSensor = DistanceSensor(echo=16, trigger=12)
 dt11 = DHT11(board.D21)
-buzzer = Buzzer(22)
+buzzer = Buzzer(27)
 
 def mainCode():
     ledRGB.active_high = False
