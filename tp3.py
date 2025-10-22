@@ -1,11 +1,12 @@
 from gpiozero import MotionSensor, RGBLED, DistanceSensor, Buzzer
 from adafruit_dht import DHT11
 from interface import main
+import board
 
 ledRGB = RGBLED(13, 19, 26)
 motionSensor = MotionSensor(17)
 distanceSensor = DistanceSensor(echo=16, trigger=12)
-dt11 = DHT11(21)
+dt11 = DHT11(board.D21)
 buzzer = Buzzer(22)
 
 def mainCode():
