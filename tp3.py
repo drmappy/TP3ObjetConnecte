@@ -9,7 +9,7 @@ distanceSensor = DistanceSensor(echo=16, trigger=12)
 dt11 = DHT11(board.D21)
 buzzer = Buzzer(27)
 
-def mainCode():
+def mainCode(): 
     ledRGB.active_high = False
     print("Merci, c'est parti!")
     buzzer.on()
