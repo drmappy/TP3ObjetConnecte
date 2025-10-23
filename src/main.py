@@ -35,7 +35,7 @@ def main(debug=False):
         if not debug:
             wait_for_motion(sensors['motion_sensor'])
             
-            signal_start(sensors['buzzer'])
+            # signal_start(sensors['buzzer'])
             
             sensors['motion_sensor'].when_activated = None
             sensors['motion_sensor'].when_deactivated = None
@@ -56,4 +56,4 @@ def main(debug=False):
 
 if __name__ == "__main__":
  
-    main(debug=True)
+    main(debug=False)
