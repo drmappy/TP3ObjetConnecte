@@ -5,18 +5,19 @@ try:
     from config import (
         PIN_LED_RED, PIN_LED_GREEN, PIN_LED_BLUE,
         PIN_MOTION, PIN_DISTANCE_ECHO, PIN_DISTANCE_TRIGGER,
-        PIN_DHT11, PIN_BUZZER
+        PIN_DHT11 #PIN_BUZZER
     )
     import psutil
     import board
-    from gpiozero import RGBLED, MotionSensor, DistanceSensor, Buzzer
+    print(dir(board))
+    from gpiozero import RGBLED, MotionSensor, DistanceSensor #Buzzer
     from adafruit_dht import DHT11
     HARDWARE_AVAILABLE = True
 except (ImportError, NotImplementedError) as e:
     IMPORT_ERROR_MSG = str(e)
     PIN_LED_RED = PIN_LED_GREEN = PIN_LED_BLUE = 0
     PIN_MOTION = PIN_DISTANCE_ECHO = PIN_DISTANCE_TRIGGER = 0
-    PIN_DHT11 = PIN_BUZZER = 0
+    PIN_DHT11 = 0#PIN_BUZZER 
 
 
 def clean_gpio_processes():
@@ -54,15 +55,15 @@ def initialize_sensors(debug=False):
         echo=PIN_DISTANCE_ECHO,
         trigger=PIN_DISTANCE_TRIGGER
     )
-    dht11_sensor = DHT11(getattr(board, f'D{PIN_DHT11}'))
-    buzzer = Buzzer(PIN_BUZZER)
+    dht11_sensor = DHT11(getattr(board, f'D{PIN_DHT11}'))  # Updated to use GPIO pin
+    # buzzer = Buzzer(PIN_BUZZER)
     
     return {
         'led_rgb': led_rgb,
         'motion_sensor': motion_sensor,
         'distance_sensor': distance_sensor,
         'dht11': dht11_sensor,
-        'buzzer': buzzer
+        # 'buzzer': buzzer
     }
 
 
@@ -109,15 +110,15 @@ def _create_dummy_sensors():
         def close(self):
             pass
     
-    class DummyBuzzer:
-        def on(self):
-            print("(Buzzer: BEEP)")
+    # class DummyBuzzer:
+    #     def on(self):
+    #         print("(Buzzer: BEEP)")
         
-        def off(self):
-            print("(Buzzer: OFF)")
+    #     def off(self):
+    #         print("(Buzzer: OFF)")
         
-        def close(self):
-            pass
+    #     def close(self):
+    #         pass
     
     print("DEBUG MODE: Using dummy sensor values.")
     
@@ -126,7 +127,7 @@ def _create_dummy_sensors():
         'motion_sensor': DummyMotionSensor(),
         'distance_sensor': DummyDistance(),
         'dht11': DummyDHT11(),
-        'buzzer': DummyBuzzer()
+        # 'buzzer': DummyBuzzer()
     }
 
 
@@ -139,7 +140,7 @@ def cleanup_sensors(sensors):
         if dht and hasattr(dht, 'exit'):
             dht.exit()
         
-        for key in ['led_rgb', 'motion_sensor', 'distance_sensor', 'buzzer']:
+        for key in ['led_rgb', 'motion_sensor', 'distance_sensor']:
             component = sensors.get(key)
             if component and hasattr(component, 'close'):
                 component.close()

@@ -1,6 +1,7 @@
 import tkinter as tk
 import threading
 import time
+import sys
 from config import (
     DEFAULT_FREQUENCY, FREQUENCY_STEP,
     DISTANCE_RED_THRESHOLD, DISTANCE_YELLOW_MAX,
@@ -67,15 +68,18 @@ class SensorMonitorGUI:
     def _increase_frequency(self):
         self.frequency += FREQUENCY_STEP
         print(f"+{FREQUENCY_STEP} seconde d'intervalle")
+        sys.stdout.flush()
         self._restart_monitoring()
     
     def _decrease_frequency(self):
         self.frequency = max(FREQUENCY_STEP, self.frequency - FREQUENCY_STEP)
         print(f"-{FREQUENCY_STEP} seconde d'intervalle")
+        sys.stdout.flush()
         self._restart_monitoring()
     
     def _stop_monitoring(self):
         print("Arrêt propre de la surveillance")
+        sys.stdout.flush()
         self.stop_event.set()
         
         if self.monitor_thread and self.monitor_thread.is_alive():
@@ -85,19 +89,26 @@ class SensorMonitorGUI:
         self.root.destroy()
     
     def _monitor_sensors(self):
+        print("Démarrage du fil de surveillance des capteurs...")  # Debugging thread start
+        print(f"État initial de stop_event: {self.stop_event.is_set()}")  # Check initial state of stop_event
+        sys.stdout.flush()
         iteration = 0
-        
+
         while not self.stop_event.is_set():
+            print("Entrée dans la boucle while de surveillance des capteurs.")  # Confirm entering the loop
+            sys.stdout.flush()
             try:
                 iteration += 1
-                
+                print(f" itération de surveillance {iteration}...")  # Debugging iteration
+                sys.stdout.flush()
+
                 distance_m = self.sensors['distance_sensor'].distance
                 distance_cm = distance_m * 100
                 temperature = self.sensors['dht11'].temperature
                 humidity = self.sensors['dht11'].humidity
-                
+
                 self._update_led_color(distance_cm)
-                
+
                 print(
                     f"Seconde {iteration * self.frequency:.1f}: "
                     f"Température: {temperature}°C  "
@@ -105,16 +116,22 @@ class SensorMonitorGUI:
                     f"Distance: {distance_m:.2f}m  "
                     f"RGBLED: {self._get_led_color_name()}"
                 )
-                
+                sys.stdout.flush()
+
                 time.sleep(self.frequency)
-                
+
             except RuntimeError as e:
                 # DHT11 can occasionally fail to read
                 print(f"Erreur de lecture: {e}")
+                sys.stdout.flush()
                 continue
             except Exception as e:
-                print(f"Erreur inattendue: {e}")
+                print(f"Erreur inattendue dans le thread: {e}")  # Debugging unexpected errors
+                sys.stdout.flush()
                 break
+
+        print("Le fil de surveillance des capteurs s'est arrêté.")  # Debugging thread stop
+        sys.stdout.flush()
     
     def _update_led_color(self, distance_cm):
         led = self.sensors['led_rgb']
@@ -145,6 +162,8 @@ class SensorMonitorGUI:
             return str(color)
     
     def _start_monitoring(self):
+        print("Starting the monitoring thread...")  # Debugging thread start
+        sys.stdout.flush()
         self.monitor_thread = threading.Thread(
             target=self._monitor_sensors,
             daemon=True

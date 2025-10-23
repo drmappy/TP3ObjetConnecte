@@ -4,7 +4,7 @@ import sys
 try:
     from sensors import initialize_sensors, cleanup_sensors
     from gui import create_and_run_gui
-    from config import BUZZER_DURATION
+    # from config import BUZZER_DURATION
 except ImportError as e:
     print(f"Error importing modules: {e}")
     print("\nMake sure you're in the correct directory with:")
@@ -20,10 +20,10 @@ def wait_for_motion(motion_sensor):
     print("Merci, c'est parti!")
 
 
-def signal_start(buzzer):
-    buzzer.on()
-    time.sleep(BUZZER_DURATION)
-    buzzer.off()
+# def signal_start(buzzer):
+#     buzzer.on()
+#     time.sleep(BUZZER_DURATION)
+#     buzzer.off()
 
 
 def main(debug=False):
