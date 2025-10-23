@@ -1,35 +1,23 @@
-from gpiozero import MotionSensor
-from gpiozero import RGBLED
-from gpiozero import DistanceSensor
-import adafruit_dht
-import turtle
-import tkinter
-import threading
-from time import sleep
+from gpiozero import MotionSensor, RGBLED, DistanceSensor, Buzzer
+from adafruit_dht import DHT11
+from interface import main
+import board
 
 ledRGB = RGBLED(13, 19, 26)
 motionSensor = MotionSensor(17)
 distanceSensor = DistanceSensor(echo=16, trigger=12)
-dt11 = adafruit_dht.DHT11(21)
-frequence = 1
-
-def graphique():
-    global frequence
-    currentPrintInfoThread = threading.Thread(target=printInfo)
-    currentPrintInfoThread.start()
-
-    
-
-def printInfo():
-    global frequence
-    while True:
-        print("Seconde ", frequence, " : Température : ", dt11.temperature, "C  Humidité ", dt11.humidity)
-        sleep(1)
+dt11 = DHT11(board.D21)
+buzzer = Buzzer(27)
 
 def mainCode():
+    ledRGB.active_high = False
     print("Merci, c'est parti!")
-    # Disable motion sensor 
+    buzzer.on()
+    # Should add a delay?
+    buzzer.off()
     motionSensor.when_activated = None
     motionSensor.when_deactivated = None
+    main(dt11=dt11, distanceSensor=distanceSensor, ledRGB=ledRGB)
+
 
 motionSensor.when_activated = mainCode
