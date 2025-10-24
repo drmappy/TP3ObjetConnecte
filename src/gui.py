@@ -69,13 +69,13 @@ class SensorMonitorGUI:
         self.frequency += FREQUENCY_STEP
         print(f"+{FREQUENCY_STEP} seconde d'intervalle")
         sys.stdout.flush()
-        self._restart_monitoring()
+        # self._restart_monitoring()
     
     def _decrease_frequency(self):
         self.frequency = max(FREQUENCY_STEP, self.frequency - FREQUENCY_STEP)
         print(f"-{FREQUENCY_STEP} seconde d'intervalle")
         sys.stdout.flush()
-        self._restart_monitoring()
+        # self._restart_monitoring()
     
     def _stop_monitoring(self):
         print("Arrêt propre de la surveillance")
@@ -89,23 +89,25 @@ class SensorMonitorGUI:
         self.root.destroy()
     
     def _monitor_sensors(self):
-        print("Démarrage du fil de surveillance des capteurs...")  # Debugging thread start
-        print(f"État initial de stop_event: {self.stop_event.is_set()}")  # Check initial state of stop_event
         sys.stdout.flush()
         iteration = 0
 
         while not self.stop_event.is_set():
-            print("Entrée dans la boucle while de surveillance des capteurs.")  # Confirm entering the loop
             sys.stdout.flush()
             try:
                 iteration += 1
-                print(f" itération de surveillance {iteration}...")  # Debugging iteration
                 sys.stdout.flush()
 
                 distance_m = self.sensors['distance_sensor'].distance
                 distance_cm = distance_m * 100
-                temperature = self.sensors['dht11'].temperature
-                humidity = self.sensors['dht11'].humidity
+
+                dht11_sensor = self.sensors.get('dht11')
+                if dht11_sensor:
+                    temperature = dht11_sensor.temperature
+                    humidity = dht11_sensor.humidity
+                else:
+                    temperature = "N/A"
+                    humidity = "N/A"
 
                 self._update_led_color(distance_cm)
 
@@ -121,16 +123,14 @@ class SensorMonitorGUI:
                 time.sleep(self.frequency)
 
             except RuntimeError as e:
-                # DHT11 can occasionally fail to read
                 print(f"Erreur de lecture: {e}")
                 sys.stdout.flush()
                 continue
             except Exception as e:
-                print(f"Erreur inattendue dans le thread: {e}")  # Debugging unexpected errors
+                print(f"Erreur inattendue dans le thread: {e}")
                 sys.stdout.flush()
                 break
 
-        print("Le fil de surveillance des capteurs s'est arrêté.")  # Debugging thread stop
         sys.stdout.flush()
     
     def _update_led_color(self, distance_cm):
@@ -162,7 +162,6 @@ class SensorMonitorGUI:
             return str(color)
     
     def _start_monitoring(self):
-        print("Starting the monitoring thread...")  # Debugging thread start
         sys.stdout.flush()
         self.monitor_thread = threading.Thread(
             target=self._monitor_sensors,

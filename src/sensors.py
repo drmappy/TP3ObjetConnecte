@@ -5,19 +5,18 @@ try:
     from config import (
         PIN_LED_RED, PIN_LED_GREEN, PIN_LED_BLUE,
         PIN_MOTION, PIN_DISTANCE_ECHO, PIN_DISTANCE_TRIGGER,
-        PIN_DHT11 #PIN_BUZZER
+        PIN_DHT11, PIN_BUZZER
     )
     import psutil
     import board
-    print(dir(board))
-    from gpiozero import RGBLED, MotionSensor, DistanceSensor #Buzzer
+    from gpiozero import RGBLED, MotionSensor, DistanceSensor, Buzzer
     from adafruit_dht import DHT11
     HARDWARE_AVAILABLE = True
 except (ImportError, NotImplementedError) as e:
     IMPORT_ERROR_MSG = str(e)
     PIN_LED_RED = PIN_LED_GREEN = PIN_LED_BLUE = 0
     PIN_MOTION = PIN_DISTANCE_ECHO = PIN_DISTANCE_TRIGGER = 0
-    PIN_DHT11 = 0#PIN_BUZZER 
+    PIN_DHT11 = PIN_BUZZER = 0 
 
 
 def clean_gpio_processes():
@@ -41,29 +40,39 @@ def initialize_sensors(debug=False):
             print("=" * 60)
         return _create_dummy_sensors()
     
+
     clean_gpio_processes()
     
+
     led_rgb = RGBLED(
         red=PIN_LED_RED,
         green=PIN_LED_GREEN,
         blue=PIN_LED_BLUE,
         active_high=False
     )
+
     
     motion_sensor = MotionSensor(PIN_MOTION)
+
     distance_sensor = DistanceSensor(
         echo=PIN_DISTANCE_ECHO,
         trigger=PIN_DISTANCE_TRIGGER
     )
-    dht11_sensor = DHT11(getattr(board, f'D{PIN_DHT11}'))  # Updated to use GPIO pin
-    # buzzer = Buzzer(PIN_BUZZER)
+
+    buzzer = Buzzer(PIN_BUZZER)
+    try:
+        dht11_sensor = DHT11(board.D4) 
+    except Exception as e:
+        print(f"Error initializing DHT11 sensor: {e}")
+        dht11_sensor = None
     
+
     return {
         'led_rgb': led_rgb,
         'motion_sensor': motion_sensor,
         'distance_sensor': distance_sensor,
         'dht11': dht11_sensor,
-        # 'buzzer': buzzer
+        'buzzer': buzzer
     }
 
 
@@ -110,15 +119,15 @@ def _create_dummy_sensors():
         def close(self):
             pass
     
-    # class DummyBuzzer:
-    #     def on(self):
-    #         print("(Buzzer: BEEP)")
+    class DummyBuzzer:
+        def on(self):
+            print("(Buzzer: BEEP)")
         
-    #     def off(self):
-    #         print("(Buzzer: OFF)")
+        def off(self):
+            print("(Buzzer: OFF)")
         
-    #     def close(self):
-    #         pass
+        def close(self):
+            pass
     
     print("DEBUG MODE: Using dummy sensor values.")
     
@@ -127,7 +136,7 @@ def _create_dummy_sensors():
         'motion_sensor': DummyMotionSensor(),
         'distance_sensor': DummyDistance(),
         'dht11': DummyDHT11(),
-        # 'buzzer': DummyBuzzer()
+        'buzzer': DummyBuzzer()
     }
 
 
