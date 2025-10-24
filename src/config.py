@@ -18,7 +18,7 @@ FREQUENCY_STEP = 0.1
 BUZZER_DURATION = 0.5 
 
 # GUI Settings
-BUTTON_WIDTH = 16
+BUTTON_WIDTH = 20  # Increased width to accommodate longer text
 BUTTON_HEIGHT = 3
 BUTTON_PADDING = 8
 BUTTON_BORDER_WIDTH = 4

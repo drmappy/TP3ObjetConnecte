@@ -60,7 +60,7 @@ class SensorMonitorGUI:
             height=BUTTON_HEIGHT,
             command=command,
             borderwidth=0,
-            wraplength=BUTTON_WRAP_LENGTH
+            wraplength=BUTTON_WRAP_LENGTH + 25  # Increased wraplength for better text wrapping
         )
         button.pack()
         border_frame.pack(side=tk.LEFT, padx=BUTTON_PADDING)
