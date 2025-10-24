@@ -95,7 +95,7 @@ class SensorMonitorGUI:
         while not self.stop_event.is_set():
             sys.stdout.flush()
             try:
-                iteration += 1
+                iteration += self.frequency
                 sys.stdout.flush()
 
                 distance_m = self.sensors['distance_sensor'].distance
@@ -112,7 +112,7 @@ class SensorMonitorGUI:
                 self._update_led_color(distance_cm)
 
                 print(
-                    f"Seconde {iteration * self.frequency:.1f}: "
+                    f"Seconde {iteration :.1f}: "
                     f"Température: {temperature}°C  "
                     f"Humidité: {humidity}%  "
                     f"Distance: {distance_m:.2f}m  "
